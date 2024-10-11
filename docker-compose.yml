@@ -35,7 +35,7 @@ services:
         POSTGRES_USER: symon
         POSTGRES_DB: pharmacy_catalog
       volumes:
-        - db:/var/lib/postgresql/data
+        - pharmacy_catalog_db:/var/lib/postgresql/data
       networks:
         - pharmacy_catalog
 
