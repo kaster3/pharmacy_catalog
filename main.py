@@ -27,7 +27,7 @@ application = FastAPI(
 
 application.include_router(
     router=a1,
-    prefix="catalog",
+    prefix="/catalog",
 )
 
 
