@@ -1,0 +1,63 @@
+services:
+    pharmacy_catalog_node1:
+      container_name: pharmacy_catalog_node1
+      build:
+        dockerfile: Dockerfile
+      command:
+        - "make"
+        - "run"
+      restart: always
+      env_file:
+        - .env
+      networks:
+        - pharmacy_catalog
+
+    pharmacy_catalog_node2:
+      container_name: pharmacy_catalog_node2
+      build:
+        dockerfile: Dockerfile
+      command:
+        - "make"
+        - "run"
+      restart: always
+      env_file:
+        - .env
+      networks:
+        - pharmacy_catalog
+
+    db:
+        image: postgres:16.2
+        container_name: db
+        restart: always
+        shm_size: 128mb
+        environment:
+          POSTGRES_PASSWORD: 1234
+          POSTGRES_USER: symon
+          POSTGRES_DB: pharmacy_catalog
+        volumes:
+          - db:/var/lib/postgresql/data
+        networks:
+          - pharmacy_catalog
+
+    nginx_reports:
+      image: nginx:latest
+      volumes:
+        - /opt/homebrew/etc/nginx/reports_nginx.conf:/etc/nginx/nginx.conf
+      ports:
+        - 8080:80
+      depends_on:
+        - pharmacy_catalog_node1
+        - pharmacy_catalog_node2
+      networks:
+        - pharmacy_catalog
+        - pharmacy_gateway
+
+volumes:
+  db:
+    driver: local
+
+networks:
+  pharmacy_catalog:
+    driver: bridge
+  pharmacy_gateway:
+    external: true
