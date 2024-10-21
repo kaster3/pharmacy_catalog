@@ -4,11 +4,9 @@ services:
       build:
         dockerfile: Dockerfile
       command:
-        - "make"
-        - "run"
+        - "python"
+        - "run_main.py"
       restart: always
-      env_file:
-        - .env
       networks:
         - pharmacy_catalog
 
@@ -17,11 +15,9 @@ services:
       build:
         dockerfile: Dockerfile
       command:
-        - "make"
-        - "run"
+        - "python"
+        - "run_main.py"
       restart: always
-      env_file:
-        - .env
       networks:
         - pharmacy_catalog
 
@@ -61,3 +57,4 @@ networks:
     driver: bridge
   pharmacy_auth_gateway:
     external: true
+
