@@ -57,6 +57,7 @@ async def update_product_partial(
         session=session,
         product=product,
         product_update=product_update_partial,
+        partial=True,
     )
 
 
