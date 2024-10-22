@@ -25,4 +25,3 @@ class ProductUpdatePartial(ProductBase):
     name: str | None = None
     description: str | None = None
     price: int | None = None
-
