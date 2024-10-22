@@ -44,7 +44,7 @@ async def update_product(
     partial: bool = False,
 ) -> Product:
     # exclude_unset=True - Исключить то, что не было передано
-    for name, value in product_update.model_dump(exclude_unset=partial):
+    for name, value in product_update.model_dump(exclude_unset=partial).items():
         setattr(product, name, value)
     await session.commit()
     return product
