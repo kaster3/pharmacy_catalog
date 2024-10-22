@@ -1,10 +1,24 @@
-from sqlalchemy.orm import Mapped
+from typing import TYPE_CHECKING
+
+from sqlalchemy import ForeignKey, String, Text
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
 from .mixins import IntIdPkMixin
 
+if TYPE_CHECKING:
+    from .categories import Category
+
 
 class Product(Base, IntIdPkMixin):
-    name: Mapped[str]
-    description: Mapped[str]
+    name: Mapped[str] = mapped_column(String(30), unique=True)
+    description: Mapped[str] = mapped_column(
+        Text,
+        default="",
+        server_default="",
+    )
     price: Mapped[int]
+    # Связываем 2 таблицы
+    category_id: Mapped[int] = mapped_column(ForeignKey("categories.id"))
+    # Связываем 2 модели, чтобы обращаться с категории на ее продукты
+    categories: Mapped["Category"] = relationship(back_populates="products")
