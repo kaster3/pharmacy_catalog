@@ -1,5 +1,7 @@
+from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.engine import Result
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.database.models import Product
@@ -28,12 +30,19 @@ async def create_product(
     session: AsyncSession,
     product_in: ProductCreate,
 ) -> Product:
-    product = Product(**product_in.model_dump())
-    session.add(product)
-    await session.commit()
-    # если на стороне бд происходят какие-то изменения при сохранение объекта,
-    # то данные могут стать не актуальные
-    await session.refresh(product)
+    try:
+        product = Product(**product_in.model_dump())
+        session.add(product)
+        await session.commit()
+        # если на стороне бд происходят какие-то изменения при сохранение объекта,
+        # то данные могут стать не актуальные
+        await session.refresh(product)
+    except IntegrityError as error:
+        await session.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={"message": "Продукт с таким именем уже есть"},
+        )
     return product
 
 
