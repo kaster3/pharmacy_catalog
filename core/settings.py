@@ -1,7 +1,11 @@
+from pathlib import Path
 from typing import Literal
 
 from pydantic import BaseModel, PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+BASE_DIR = Path(__file__).parent.parent
 
 
 class ApiV1Prefix(BaseModel):
@@ -56,6 +60,12 @@ class GunicornConfig(BaseModel):
     timeout: int
 
 
+class JWTToken(BaseModel):
+    public_key: Path = BASE_DIR / "certs" / "jwt-public-key.pem"
+    algorithm: str = "RS256"
+    audience: str = "fastapi-users:auth"
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=(".env.template", ".env"),
@@ -68,6 +78,7 @@ class Settings(BaseSettings):
     db: DataBase
     logging: LoggingConfig
     api: ApiPrefix = ApiPrefix()
+    jwt_token: JWTToken = JWTToken()
 
 
 settings = Settings()
