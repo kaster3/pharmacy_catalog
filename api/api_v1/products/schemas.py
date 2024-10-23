@@ -5,6 +5,7 @@ class ProductBase(BaseModel):
     name: str
     description: str
     price: int
+    category_id: int
 
 
 class Product(ProductBase):
@@ -25,3 +26,4 @@ class ProductUpdatePartial(ProductBase):
     name: str | None = None
     description: str | None = None
     price: int | None = None
+    category_id: int | None = None
